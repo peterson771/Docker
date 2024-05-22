@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: desafioelven
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: desafioelven
+  template:
+    metadata:
+      labels:
+        app: desafioelven
+    spec:
+      containers:
+      - name: desafioelven
+        image: andersenpavan/hostscorretos:latest
+        ports:
+        - containerPort: 5000  # Ajuste conforme a porta que seu app utiliza
+          name: apppython
+        - containerPort: 9999
+          name: metricas
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: desafioelven-service
+spec:
+#  type: LoadBalancer  # Para acesso externo; use ClusterIP para acesso interno
+  ports:
+  - name: http
+    port: 80
+    targetPort: apppython
+    protocol: TCP
+  - name: https
+    port: 9999
+    targetPort: metricas
+    protocol: TCP
+  selector:
+    app: desafioelven
+
